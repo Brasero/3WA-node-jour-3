@@ -31,10 +31,7 @@ const server = createServer(async (req, res) => {
         res.writeHead(404, {
             "Content-type": 'text/html'
         })
-        res.end(`
-            <h1>Page introuvable</h1>
-            <a href="/"><button>Go Home</button></a>
-        `)
+        res.end(readFileSync('404.html', 'utf8'))
     }
 })
 
