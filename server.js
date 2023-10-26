@@ -112,6 +112,13 @@ else
             res.writeHead(200, {'Content-type': 'text/html'})
             res.end(html)
         })
+    } else if(req.url === '/access') {
+        const user = { isAdmin: true }
+        pug.renderFile('./view/navBar.pug', user, (err, html) => {
+            if (err) throw err;
+            res.writeHead(200, {'Content-type': 'text/html'})
+            res.end(html)
+        })
     } else {
         res.writeHead(404, {
             "Content-type": 'text/html'

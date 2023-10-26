@@ -1,0 +1,29 @@
+nav: ul
+        li: a(
+            href='/home'
+            aria-label=''
+            name=""
+            ) Home
+        li#myId(class="myClass"): a(href='/portfolio') Portfolio
+        li: a(href='/contact') Contact
+
+p hfedjajfhjkqjdhkjfa
+
+p.
+    hjdfzshjhfuehauhfuzyhfyfojeziaioheghuheauoghioazziogae
+    jhdzijfaehueguiafaz<small>mon petit text</small>
+
+
+| jdikdiseuejs
+
+- const sensitiveData = `<script>alert('XSS')</script>`;
+
+//- Pug echappe le contenu des constantes qui lui sont passée au moment de la compilation
+
+div= sensitiveData
+
+- const text = `<span>Hello</span>`;
+
+div!= text
+
+div jdjdsuiuenf!{text}
