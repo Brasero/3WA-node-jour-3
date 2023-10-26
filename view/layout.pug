@@ -1,0 +1,36 @@
+mixin listItem(text)
+    //- le &attributes(attributes) permet de récuperer et d'appliquer
+    //- des attributs qui ont été passé dans le second jeu de parentheses à la mixin
+    li
+        a(href='/')&attributes(attributes)= text
+
+doctype html
+html(lang='fr')
+    head
+        meta(charset='utf8')
+        block style
+        block title
+
+    body
+        include navBar
+        block content
+
+        h1 bienvenue sur le site
+        - const users = ['JM', 'QJJd', 'Mdjjzi'];
+        ul
+            each user, index in users
+                +listItem(user)(class="maClass")
+        -const iterable = new Set(['jdis', "jkfja", "fhjfqs"])
+        ul
+            - for (const iter of iterable)
+                li= iter
+
+        - let i = 1
+
+        while i <= 10
+            div= i
+            - i++
+
+        script.
+            const name = 'test'
+            console.log(name)

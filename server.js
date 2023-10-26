@@ -4,10 +4,19 @@ import {json} from "node:stream/consumers"
 import querystring from 'node:querystring'
 import pug from 'pug'
 
-const students = [
-    { name : "Sonia"},
-    { name : "Antoine"}
-];
+const loggedUser = {
+    name: {
+        first: 'Jean',
+        last: 'Dupont',
+    },
+    age: 36,
+    birthdate: new Date('1986-04-18'),
+    location: {
+        zipcode: '77420',
+        city: 'Champs-sur-Marne',
+    },
+    isAdmin: true
+};
 
 const server = createServer(async (req, res) => {
     //Répond à la demande de favicon (icon de l'onglet de page)
@@ -27,104 +36,20 @@ const server = createServer(async (req, res) => {
     }
 
     if(req.url === '/') {
-        if(req.method === 'GET') {
-            const home = readFileSync("./view/home.html", 'utf8')
+        pug.renderFile('./view/loggedUserTemplate.pug', {loggedUser}, (err, html) => {
+            if (err) throw err;
             res.writeHead(200, {
-                'Content-type': 'text/html'
+                "Content-type": 'text/html'
             })
-            res.end(home)
-            return
-        } else if(req.method === 'POST') {
-            let data = ''
-            req.on('data', chunk => {
-                data += chunk
-            })
-            req.on("end", () => {
-                console.log(data)
-                // const dataArray = data.split('&')
-                // const dataObj = {}
-                // dataArray.forEach((part) => {
-                //     const [key, value] = part.split('=')
-                //     dataObj[key] = value
-                // })
-                // console.log(dataObj)
-
-                //Ce qui est fait au dessus 'a la main' et facilité par l'utilisation de querystring.parse()
-
-                const dataObj = querystring.parse(data)
-                console.log(dataObj.name)
-                if(dataObj.name?.trim() === '') {
-                    console.log('aucune donnée reçue.')
-                    res.end()
-                    return
-                }
-
-                students.push({...dataObj})
-
-                res.writeHead(301, {
-                    'Location': '/'
-                })
-                res.end()
-            })
-        }
-    } else if(req.url === "/users") {
-        res.writeHead(200, {'Content-type': 'text/html'})
-
-        let html = "<ul>"
-
-        students.map((student)=> html += `<li>${student.name}</li>`)
-        html += '</ul>'
-
-        res.end(`
-            <!DOCTYPE html>
-            <html>
-                <head>
-                    <meta charset="UTF-8" />
-                    <title>Les etudiants</title>
-                </head>
-                <body>
-                    <h1>Liste des étudiants</h1>
-                    ${html}
-                    <a href="/">Home</a>
-                </body>
-            </html>
-        `)
-
-    }  else if(req.url === '/pug') {
-        const template = `
-if age >= 18
-    h1 Access Granted
-else
-    h1 Permission denied
-        `
-        // const compileTemplate = pug.compile(template);
-        // const html = compileTemplate({age: 17})
-
-        pug.render(template, { age: 17 }, (err, html) => {
-            if (err) throw err;
-            res.writeHead(200, {'Content-type': 'text/html'})
             res.end(html)
         })
-
-    } else if(req.url === '/pugFile') {
-        pug.renderFile('./view/page.pug', {name: 'Pierre'}, (err, html) => {
-            if(err) throw err;
-            res.writeHead(200, {'Content-type': 'text/html'})
-            res.end(html)
-        })
-    } else if(req.url === '/access') {
-        const user = { isAdmin: true }
-        pug.renderFile('./view/navBar.pug', user, (err, html) => {
-            if (err) throw err;
-            res.writeHead(200, {'Content-type': 'text/html'})
-            res.end(html)
-        })
-    } else {
-        res.writeHead(404, {
-            "Content-type": 'text/html'
-        })
-        res.end(readFileSync('404.html', 'utf8'))
+        return
     }
+
+    res.writeHead(404, {
+        "Content-type": 'text/html'
+    })
+    res.end(readFileSync('404.html', 'utf8'))
 })
 
 server.listen('8888', ()=> {
